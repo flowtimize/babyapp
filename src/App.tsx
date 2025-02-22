@@ -181,9 +181,9 @@ function App() {
       {/* Main Content (hidden during print) */}
       <div className="print:hidden">
         {/* Hero Section */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-blue-50 to-white">
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-blue-50 to-white py-16 md:py-0">
           <div className="absolute inset-0 z-0 opacity-20">
-            <div className="grid grid-cols-4 gap-4 p-8 h-full">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-8 h-full">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="bg-blue-100 rounded-lg transform rotate-3"></div>
               ))}
@@ -191,11 +191,11 @@ function App() {
           </div>
           
           <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-            <h1 className="text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               Capture Your Baby's First Year
               <span className="text-blue-600"> Beautifully</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-12 leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-600 mb-8 md:mb-12 leading-relaxed">
               Create a stunning monthly milestone collection of your baby's first year. 
               Upload, arrange, and print a beautiful keepsake in minutes.
             </p>
@@ -203,33 +203,33 @@ function App() {
             <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
               <button
                 onClick={scrollToUploader}
-                className="flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
+                className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
               >
                 <Camera size={24} />
                 Start Creating
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-3xl mx-auto">
               <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm">
-                <Clock className="w-12 h-12 text-blue-600 mb-4" />
+                <Clock className="w-10 h-10 md:w-12 md:h-12 text-blue-600 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Monthly Milestones</h3>
-                <p className="text-gray-600">Track your baby's growth month by month in a beautiful layout</p>
+                <p className="text-sm md:text-base text-gray-600">Track your baby's growth month by month in a beautiful layout</p>
               </div>
               <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm">
-                <Upload className="w-12 h-12 text-blue-600 mb-4" />
+                <Upload className="w-10 h-10 md:w-12 md:h-12 text-blue-600 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Easy Upload</h3>
-                <p className="text-gray-600">Simple drag and drop interface to arrange your photos</p>
+                <p className="text-sm md:text-base text-gray-600">Simple drag and drop interface to arrange your photos</p>
               </div>
               <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm">
-                <Printer className="w-12 h-12 text-blue-600 mb-4" />
+                <Printer className="w-10 h-10 md:w-12 md:h-12 text-blue-600 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Print Ready</h3>
-                <p className="text-gray-600">Generate a high-quality printable layout instantly</p>
+                <p className="text-sm md:text-base text-gray-600">Generate a high-quality printable layout instantly</p>
               </div>
             </div>
           </div>
 
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
             <button
               onClick={scrollToUploader}
               className="text-gray-400 hover:text-gray-600 transition-colors"
