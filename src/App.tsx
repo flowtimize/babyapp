@@ -282,16 +282,6 @@ function App() {
               <p className="text-lg text-gray-600">Upload your precious moments and create a beautiful timeline</p>
             </div>
 
-            <div className="mb-8 flex justify-end">
-              <button
-                onClick={handlePrint}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Download size={20} />
-                Print Layout
-              </button>
-            </div>
-
             <div className="grid grid-cols-3 md:grid-cols-4 gap-6">
               {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
                 const photo = photos.find(p => p.month === month);
@@ -339,6 +329,16 @@ function App() {
                   </div>
                 );
               })}
+            </div>
+
+            <div className="mt-16 flex justify-center">
+              <button
+                onClick={handlePrint}
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Download size={20} />
+                Print Layout
+              </button>
             </div>
 
             <div className="mt-12 bg-blue-50 rounded-lg p-6">
