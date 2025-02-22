@@ -91,8 +91,56 @@ function App() {
     uploaderRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const printContent = (
+    <div className="p-8">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
+        First Year Milestones
+      </h1>
+      <div className="grid grid-cols-4 gap-6">
+        {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
+          const photo = photos.find(p => p.month === month);
+          return (
+            <div key={month} className="aspect-square">
+              <div className="relative h-full">
+                {photo ? (
+                  <div className="w-full h-full rounded-lg overflow-hidden">
+                    <img
+                      src={photo.url}
+                      alt={`Month ${month}`}
+                      className="w-full h-full object-cover"
+                      loading="eager"
+                      style={{
+                        display: 'block',
+                        maxWidth: '100%',
+                        height: 'auto'
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                    <span className="text-gray-400">Month {month}</span>
+                  </div>
+                )}
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white px-4 py-1 rounded-full text-sm font-medium">
+                  Month {month}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Print-only content */}
+      <div className="hidden print:block">
+        <div id="printArea" className="bg-white" ref={printRef}>
+          {printContent}
+        </div>
+      </div>
+
       {/* Print Preview Modal */}
       {showPrintPreview && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center print:hidden">
@@ -107,40 +155,8 @@ function App() {
               </button>
             </div>
             <div className="p-8">
-              <div id="printArea" className="bg-white" ref={printRef}>
-                <div className="p-8">
-                  <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-                    First Year Milestones
-                  </h1>
-                  <div className="grid grid-cols-4 gap-6">
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
-                      const photo = photos.find(p => p.month === month);
-                      return (
-                        <div key={month} className="aspect-square">
-                          <div className="relative h-full">
-                            {photo ? (
-                              <div className="w-full h-full rounded-lg shadow-md overflow-hidden">
-                                <img
-                                  src={photo.url}
-                                  alt={`Month ${month}`}
-                                  className="w-full h-full object-cover"
-                                  style={{ display: 'block' }}
-                                />
-                              </div>
-                            ) : (
-                              <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-200">
-                                <span className="text-gray-400">Month {month}</span>
-                              </div>
-                            )}
-                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white px-4 py-1 rounded-full shadow-md text-sm font-medium">
-                              Month {month}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+              <div className="bg-white">
+                {printContent}
               </div>
               <div className="mt-8 flex justify-center gap-4">
                 <button
@@ -366,27 +382,36 @@ function App() {
         @media print {
           @page {
             size: landscape;
-            margin: 1cm;
+            margin: 15mm;
           }
+          
           body {
-            print-color-adjust: exact;
-            -webkit-print-color-adjust: exact;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            background: white !important;
           }
+
           #printArea {
-            display: block !important;
-            page-break-inside: avoid;
+            width: 100% !important;
+            height: 100% !important;
+            position: relative !important;
+            overflow: visible !important;
           }
-          #printArea img {
+
+          img {
             display: block !important;
-            print-color-adjust: exact;
-            -webkit-print-color-adjust: exact;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
           }
+
           .print-hide {
             display: none !important;
           }
+
           .fixed {
             position: static !important;
           }
+
           .modal {
             position: static !important;
             transform: none !important;
