@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload, Download, Image as ImageIcon, Trash2, Camera, Clock, Printer, Heart, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useIntl } from 'react-intl';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
 
 interface PhotoData {
   month: number;
@@ -7,27 +9,29 @@ interface PhotoData {
 }
 
 function App() {
+  const intl = useIntl();
   const [photos, setPhotos] = useState<PhotoData[]>([]);
   const [draggedMonth, setDraggedMonth] = useState<number | null>(null);
   const [currentExample, setCurrentExample] = useState(0);
   const [showPrintPreview, setShowPrintPreview] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
   const uploaderRef = useRef<HTMLDivElement>(null);
+  const [babyName, setBabyName] = useState<string>('');
 
   const examples = [
     {
-      title: "Classic Monthly Grid",
-      description: "A beautiful grid layout perfect for framing or creating a photo book",
+      titleId: 'app.example.classic.title',
+      descriptionId: 'app.example.classic.description',
       image: "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?w=1200&auto=format&fit=crop&q=80"
     },
     {
-      title: "Modern Timeline",
-      description: "See your baby's growth journey in a stunning timeline format",
+      titleId: 'app.example.modern.title',
+      descriptionId: 'app.example.modern.description',
       image: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=1200&auto=format&fit=crop&q=80"
     },
     {
-      title: "Month by Month Collection",
-      description: "Each milestone beautifully captured and arranged",
+      titleId: 'app.example.collection.title',
+      descriptionId: 'app.example.collection.description',
       image: "https://images.unsplash.com/photo-1612462766564-895ea3388d2b?w=1200&auto=format&fit=crop&q=80"
     }
   ];
@@ -101,7 +105,7 @@ function App() {
         }}
       />
       <h1 className="font-handwriting text-7xl text-gray-800 text-center mb-16 print:mb-12">
-        First Year
+        {babyName && `${babyName} - `}{intl.formatMessage({ id: 'app.firstYear' })}
       </h1>
       <div className="grid grid-cols-4 gap-8 print:gap-6 max-w-[297mm] mx-auto">
         {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
@@ -115,7 +119,7 @@ function App() {
                     <div className="w-full h-full overflow-hidden relative">
                       <img
                         src={photo.url}
-                        alt={`Month ${month}`}
+                        alt={intl.formatMessage({ id: 'app.month.placeholder' }, { number: month })}
                         className="w-full h-full object-cover absolute inset-0"
                         loading="eager"
                         style={{
@@ -131,13 +135,15 @@ function App() {
                     </div>
                   ) : (
                     <div className="w-full h-full bg-gray-50 flex items-center justify-center border-2 border-dashed border-gray-200">
-                      <span className="text-gray-400 text-sm">Month {month}</span>
+                      <span className="text-gray-400 text-sm">
+                        {intl.formatMessage({ id: 'app.month.placeholder' }, { number: month })}
+                      </span>
                     </div>
                   )}
                 </div>
               </div>
               {/* Large number overlay - moved to front */}
-              <div className="absolute -right-2 -bottom-2 text-[120px] font-serif text-[#C0A080] opacity-80 pointer-events-none select-none z-10">
+              <div className="absolute -right-2 -bottom-2 text-[60px] sm:text-[80px] md:text-[120px] font-serif text-[#C0A080] opacity-80 pointer-events-none select-none z-10">
                 {month}
               </div>
             </div>
@@ -149,6 +155,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <LanguageSwitcher />
+      
       {/* Print-only content */}
       <div className="hidden print:block">
         <div id="printArea" className="bg-white" ref={printRef}>
@@ -161,7 +169,9 @@ function App() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center print:hidden">
           <div className="bg-white w-[1200px] max-w-[95vw] max-h-[95vh] overflow-auto rounded-lg shadow-xl">
             <div className="p-4 border-b flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Print Preview</h2>
+              <h2 className="text-xl font-semibold">
+                {intl.formatMessage({ id: 'app.print.preview.title' })}
+              </h2>
               <button 
                 onClick={() => setShowPrintPreview(false)}
                 className="p-2 hover:bg-gray-100 rounded-full"
@@ -179,13 +189,13 @@ function App() {
                   className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Printer size={20} />
-                  Print Now
+                  {intl.formatMessage({ id: 'app.print.now' })}
                 </button>
                 <button
                   onClick={() => setShowPrintPreview(false)}
                   className="flex items-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors"
                 >
-                  Cancel
+                  {intl.formatMessage({ id: 'app.print.cancel' })}
                 </button>
               </div>
             </div>
@@ -207,12 +217,16 @@ function App() {
           
           <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Capture Your Baby's First Year
-              <span className="text-blue-600"> Beautifully</span>
+              {intl.formatMessage({ id: 'app.title' })
+                .split(/<blue>|<\/blue>/)
+                .map((part, index) => 
+                  index === 1 ? 
+                    <span key={index} className="text-blue-600">{part}</span> : 
+                    part
+                )}
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8 md:mb-12 leading-relaxed">
-              Create a stunning monthly milestone collection of your baby's first year. 
-              Upload, arrange, and print a beautiful keepsake in minutes.
+              {intl.formatMessage({ id: 'app.description' })}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
@@ -221,25 +235,37 @@ function App() {
                 className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
               >
                 <Camera size={24} />
-                Start Creating
+                {intl.formatMessage({ id: 'app.start' })}
               </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-3xl mx-auto">
               <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm">
                 <Clock className="w-10 h-10 md:w-12 md:h-12 text-blue-600 mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Monthly Milestones</h3>
-                <p className="text-sm md:text-base text-gray-600">Track your baby's growth month by month in a beautiful layout</p>
+                <h3 className="text-lg font-semibold mb-2">
+                  {intl.formatMessage({ id: 'app.features.milestones' })}
+                </h3>
+                <p className="text-sm md:text-base text-gray-600">
+                  {intl.formatMessage({ id: 'app.features.milestones.desc' })}
+                </p>
               </div>
               <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm">
                 <Upload className="w-10 h-10 md:w-12 md:h-12 text-blue-600 mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Easy Upload</h3>
-                <p className="text-sm md:text-base text-gray-600">Simple drag and drop interface to arrange your photos</p>
+                <h3 className="text-lg font-semibold mb-2">
+                  {intl.formatMessage({ id: 'app.features.upload' })}
+                </h3>
+                <p className="text-sm md:text-base text-gray-600">
+                  {intl.formatMessage({ id: 'app.features.upload.desc' })}
+                </p>
               </div>
               <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm">
                 <Printer className="w-10 h-10 md:w-12 md:h-12 text-blue-600 mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Print Ready</h3>
-                <p className="text-sm md:text-base text-gray-600">Generate a high-quality printable layout instantly</p>
+                <h3 className="text-lg font-semibold mb-2">
+                  {intl.formatMessage({ id: 'app.features.print' })}
+                </h3>
+                <p className="text-sm md:text-base text-gray-600">
+                  {intl.formatMessage({ id: 'app.features.print.desc' })}
+                </p>
               </div>
             </div>
           </div>
@@ -256,39 +282,49 @@ function App() {
           </div>
         </section>
 
-        {/* Instructions Section - Moved here */}
+        {/* Instructions Section */}
         <section className="py-12 bg-white">
           <div className="max-w-4xl mx-auto px-4">
             <div className="bg-blue-50 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-blue-900 mb-4">How It Works</h2>
+              <h2 className="text-xl font-semibold text-blue-900 mb-4">
+                {intl.formatMessage({ id: 'app.instructions.title' })}
+              </h2>
               <ul className="list-disc list-inside space-y-2 text-blue-800">
-                <li>Click on each box to upload a photo for that month</li>
-                <li>Drag and drop photos to rearrange them</li>
-                <li>Click the trash icon to remove a photo</li>
-                <li>Click "Print Layout" to generate a printable version</li>
+                <li>{intl.formatMessage({ id: 'app.instructions.1' })}</li>
+                <li>{intl.formatMessage({ id: 'app.instructions.2' })}</li>
+                <li>{intl.formatMessage({ id: 'app.instructions.3' })}</li>
+                <li>{intl.formatMessage({ id: 'app.instructions.4' })}</li>
               </ul>
             </div>
           </div>
         </section>
 
-        {/* Example Outputs Section */}
+        {/* Examples Section */}
         <section className="py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Beautiful Results</h2>
-              <p className="text-xl text-gray-600">See what you can create with our easy-to-use tool</p>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                {intl.formatMessage({ id: 'app.examples.title' })}
+              </h2>
+              <p className="text-xl text-gray-600">
+                {intl.formatMessage({ id: 'app.examples.subtitle' })}
+              </p>
             </div>
 
             <div className="relative">
               <div className="relative aspect-[16/9] overflow-hidden rounded-xl shadow-lg">
                 <img 
                   src={examples[currentExample].image}
-                  alt={examples[currentExample].title}
+                  alt={intl.formatMessage({ id: examples[currentExample].titleId })}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-8">
-                  <h3 className="text-white text-2xl font-bold mb-2">{examples[currentExample].title}</h3>
-                  <p className="text-white/90">{examples[currentExample].description}</p>
+                  <h3 className="text-white text-2xl font-bold mb-2">
+                    {intl.formatMessage({ id: examples[currentExample].titleId })}
+                  </h3>
+                  <p className="text-white/90">
+                    {intl.formatMessage({ id: examples[currentExample].descriptionId })}
+                  </p>
                 </div>
               </div>
 
@@ -320,12 +356,35 @@ function App() {
           </div>
         </section>
 
-        {/* Photo Uploader Section */}
+        {/* Baby Name Input */}
         <section ref={uploaderRef} className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
+            <div className="max-w-xl mx-auto mb-12">
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <label htmlFor="babyName" className="block text-sm font-medium text-gray-700 mb-2">
+                  {intl.formatMessage({ id: 'app.babyName.label' })}
+                </label>
+                <input
+                  type="text"
+                  id="babyName"
+                  value={babyName}
+                  onChange={(e) => setBabyName(e.target.value)}
+                  placeholder={intl.formatMessage({ id: 'app.babyName.placeholder' })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                />
+                <p className="mt-2 text-sm text-gray-500">
+                  {intl.formatMessage({ id: 'app.babyName.help' })}
+                </p>
+              </div>
+            </div>
+
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Create Your Collection</h2>
-              <p className="text-lg text-gray-600">Upload your precious moments and create a beautiful timeline</p>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                {intl.formatMessage({ id: 'app.create.collection' })}
+              </h2>
+              <p className="text-lg text-gray-600">
+                {intl.formatMessage({ id: 'app.create.description' })}
+              </p>
             </div>
 
             <div className="grid grid-cols-3 md:grid-cols-4 gap-6">
@@ -346,7 +405,7 @@ function App() {
                         <>
                           <img
                             src={photo.url}
-                            alt={`Month ${month}`}
+                            alt={intl.formatMessage({ id: 'app.month.placeholder' }, { number: month })}
                             className="w-full h-full object-cover"
                           />
                           <button
@@ -359,7 +418,9 @@ function App() {
                       ) : (
                         <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer hover:bg-gray-50 transition-colors">
                           <ImageIcon size={32} className="text-gray-400 mb-2" />
-                          <span className="text-sm text-gray-500">Month {month}</span>
+                          <span className="text-sm text-gray-500">
+                            {intl.formatMessage({ id: 'app.month.placeholder' }, { number: month })}
+                          </span>
                           <input
                             type="file"
                             accept="image/*"
@@ -370,7 +431,7 @@ function App() {
                       )}
                     </div>
                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-sm text-sm font-medium text-gray-700">
-                      Month {month}
+                      {intl.formatMessage({ id: 'app.month.placeholder' }, { number: month })}
                     </div>
                   </div>
                 );
@@ -383,7 +444,7 @@ function App() {
                 className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Download size={20} />
-                Print Layout
+                {intl.formatMessage({ id: 'app.print.button' })}
               </button>
             </div>
           </div>
@@ -392,7 +453,7 @@ function App() {
         <footer className="bg-gray-50 py-8">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <p className="text-gray-600 flex items-center justify-center gap-2">
-              BabyCollage - Made with <Heart className="w-4 h-4 text-red-500" /> for growing families
+              BabyCollage - {intl.formatMessage({ id: 'app.footer' })}
             </p>
           </div>
         </footer>
