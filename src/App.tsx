@@ -92,38 +92,53 @@ function App() {
   };
 
   const printContent = (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
-        First Year Milestones
+    <div className="relative p-4 print:p-0 bg-[#FAF9F6]">
+      <div 
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage: `url('https://www.transparenttextures.com/patterns/white-paper.png')`,
+          backgroundRepeat: 'repeat'
+        }}
+      />
+      <h1 className="font-handwriting text-7xl text-gray-800 text-center mb-16 print:mb-12">
+        First Year
       </h1>
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-4 gap-8 print:gap-6 max-w-[297mm] mx-auto">
         {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
           const photo = photos.find(p => p.month === month);
           return (
-            <div key={month} className="aspect-square">
-              <div className="relative h-full">
-                {photo ? (
-                  <div className="w-full h-full rounded-lg overflow-hidden">
-                    <img
-                      src={photo.url}
-                      alt={`Month ${month}`}
-                      className="w-full h-full object-cover"
-                      loading="eager"
-                      style={{
-                        display: 'block',
-                        maxWidth: '100%',
-                        height: 'auto'
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-400">Month {month}</span>
-                  </div>
-                )}
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white px-4 py-1 rounded-full text-sm font-medium">
-                  Month {month}
+            <div key={month} className="relative">
+              {/* Polaroid-style frame */}
+              <div className="relative bg-white p-4 shadow-lg rotate-1 hover:rotate-0 transition-transform">
+                <div className="aspect-square">
+                  {photo ? (
+                    <div className="w-full h-full overflow-hidden relative">
+                      <img
+                        src={photo.url}
+                        alt={`Month ${month}`}
+                        className="w-full h-full object-cover absolute inset-0"
+                        loading="eager"
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                          minWidth: '100%',
+                          minHeight: '100%',
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-full bg-gray-50 flex items-center justify-center border-2 border-dashed border-gray-200">
+                      <span className="text-gray-400 text-sm">Month {month}</span>
+                    </div>
+                  )}
                 </div>
+              </div>
+              {/* Large number overlay - moved to front */}
+              <div className="absolute -right-2 -bottom-2 text-[120px] font-serif text-[#C0A080] opacity-80 pointer-events-none select-none z-10">
+                {month}
               </div>
             </div>
           );
@@ -144,7 +159,7 @@ function App() {
       {/* Print Preview Modal */}
       {showPrintPreview && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center print:hidden">
-          <div className="bg-white w-[1000px] max-w-[90vw] max-h-[90vh] overflow-auto rounded-lg shadow-xl">
+          <div className="bg-white w-[1200px] max-w-[95vw] max-h-[95vh] overflow-auto rounded-lg shadow-xl">
             <div className="p-4 border-b flex justify-between items-center">
               <h2 className="text-xl font-semibold">Print Preview</h2>
               <button 
@@ -154,8 +169,8 @@ function App() {
                 <X size={24} />
               </button>
             </div>
-            <div className="p-8">
-              <div className="bg-white">
+            <div className="p-4">
+              <div className="bg-white" style={{ aspectRatio: '1.414', width: '100%' }}>
                 {printContent}
               </div>
               <div className="mt-8 flex justify-center gap-4">
@@ -238,6 +253,21 @@ function App() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
             </button>
+          </div>
+        </section>
+
+        {/* Instructions Section - Moved here */}
+        <section className="py-12 bg-white">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="bg-blue-50 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-blue-900 mb-4">How It Works</h2>
+              <ul className="list-disc list-inside space-y-2 text-blue-800">
+                <li>Click on each box to upload a photo for that month</li>
+                <li>Drag and drop photos to rearrange them</li>
+                <li>Click the trash icon to remove a photo</li>
+                <li>Click "Print Layout" to generate a printable version</li>
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -356,23 +386,13 @@ function App() {
                 Print Layout
               </button>
             </div>
-
-            <div className="mt-12 bg-blue-50 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-blue-900 mb-4">Instructions</h2>
-              <ul className="list-disc list-inside space-y-2 text-blue-800">
-                <li>Click on each box to upload a photo for that month</li>
-                <li>Drag and drop photos to rearrange them</li>
-                <li>Click the trash icon to remove a photo</li>
-                <li>Click "Print Layout" to generate a printable version</li>
-              </ul>
-            </div>
           </div>
         </section>
 
         <footer className="bg-gray-50 py-8">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <p className="text-gray-600 flex items-center justify-center gap-2">
-              Made with <Heart className="w-4 h-4 text-red-500" /> for growing families
+              BabyCollage - Made with <Heart className="w-4 h-4 text-red-500" /> for growing families
             </p>
           </div>
         </footer>
@@ -381,40 +401,48 @@ function App() {
       <style>{`
         @media print {
           @page {
-            size: landscape;
-            margin: 15mm;
+            size: A3 landscape;  /* or A2 if needed */
+            margin: 10mm;
+            bleed: 3mm;
           }
           
           body {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             background: white !important;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
           }
 
           #printArea {
             width: 100% !important;
-            height: 100% !important;
-            position: relative !important;
-            overflow: visible !important;
+            max-width: 420mm !important; /* A3 width - margins */
+            margin: 0 auto !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
           }
 
           img {
             display: block !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
+            max-resolution: 300dpi;
           }
 
           .print-hide {
             display: none !important;
           }
 
-          .fixed {
-            position: static !important;
+          h1 {
+            margin-bottom: 8mm !important;
           }
 
-          .modal {
-            position: static !important;
-            transform: none !important;
+          .grid {
+            grid-gap: 6mm !important;
           }
         }
       `}</style>

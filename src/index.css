@@ -1,7 +1,22 @@
+/* Import fonts first */
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+/* Then Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Then custom classes */
+.font-handwriting {
+  font-family: 'Nanum Pen Script', cursive;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Rest of your styles */
 @media print {
   /* Reset all print styles to ensure proper rendering */
   * {
@@ -30,8 +45,9 @@
 
   /* Ensure proper page layout */
   @page {
-    size: landscape;
+    size: A3 landscape;
     margin: 15mm;
+    background: #FAF9F6;
   }
 
   body {
@@ -39,12 +55,26 @@
     padding: 0;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    background: white !important;
+    background: #FAF9F6 !important;
   }
 
   #printArea {
+    width: 100% !important;
+    max-width: 420mm !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    background: #FAF9F6 !important;
+  }
+
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  img {
     display: block !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    max-resolution: 300dpi;
   }
 }
